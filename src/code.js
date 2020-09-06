@@ -27,9 +27,9 @@ export default function code(data) {
   const MY_DOMAIN = '${url}';
   
   /*
-   * Step 2: 페이지의 enter your URL slug to page ID mapping
-   * The key on the left is the slug (without the slash)
-   * The value on the right is the Notion page ID
+   * Step 2: 페이지 ID 매핑에 URL 슬러그를 입력하십시오.
+   * 왼쪽의 키는 (슬래시 없는) 슬러그 입니다.
+   * 오른쪽의 값은 개념 페이지 ID 입니다.
    */
   const SLUG_TO_PAGE = {
     '': '${getId(notionUrl)}',
@@ -41,14 +41,14 @@ ${slugs
   })
   .join("")}  };
   
-  /* Step 3: enter your page title and description for SEO purposes */
+  /* Step 3: SEO 위해 페이지 제목과 설명을 입력하십시오. */
   const PAGE_TITLE = '${pageTitle || ""}';
   const PAGE_DESCRIPTION = '${pageDescription || ""}';
   
-  /* Step 4: enter a Google Font name, you can choose from https://fonts.google.com */
+  /* Step 4: 구글 폰트 이름을 입력하세요. 여기서 선택할 수 있습니다. https://fonts.google.com */
   const GOOGLE_FONT = '${googleFont || ""}';
   
-  /* Step 5: enter any custom scripts you'd like */
+  /* Step 5: 원하는 사용자 지정 스크립트를 입력하십시오. */
   const CUSTOM_SCRIPT = \`${customScript || ""}\`;
   
   /* CONFIGURATION ENDS HERE */
