@@ -52,9 +52,7 @@ ${slugs
   const CUSTOM_SCRIPT = \`${customScript || ""}\`;
   
   /* CONFIGURATION ENDS HERE */
-  
-  /* CONFIGURATION ENDS HERE */
-  
+    
   const PAGE_TO_SLUG = {};
   const slugs = [];
   const pages = [];
