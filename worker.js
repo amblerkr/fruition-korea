@@ -1,11 +1,7 @@
 /* CONFIGURATION STARTS HERE */
 
 /* Step 1: enter your domain name like fruitionsite.com */
-<<<<<<< Codesandbox
 const MY_DOMAIN = "fruition.ambler.kr";
-=======
-const MY_DOMAIN = "fruitionsite.com";
->>>>>>> GitHub
 
 /*
  * Step 2: enter your URL slug to page ID mapping
@@ -13,19 +9,19 @@ const MY_DOMAIN = "fruitionsite.com";
  * The value on the right is the Notion page ID
  */
 const SLUG_TO_PAGE = {
-  "": "771ef38657244c27b9389734a9cbff44",
-  thanks: "9d9864f5338b47b0a7f42e0f0e2bbf46",
-  showcase: "92053970e5084019ac096d2df7e7f440",
-  roadmap: "7d4b21bfb4534364972e8bf9f68c2c36"
+  "": "7e01bd81ecf54001a274d3c44323a535",
+  thanks: "c5d5cad71f144187baada20ad732b957",
+  showcase: "e3f97434ce9c4fccae570e97efe5fc5f",
+  roadmap: "6f2c5c0c8bb74d22a867bcef879c5665"
 };
 
 /* Step 3: enter your page title and description for SEO purposes */
-const PAGE_TITLE = "Fruition";
+const PAGE_TITLE = "Fruition (ver. Korean)";
 const PAGE_DESCRIPTION =
-  "Free, Open Source Toolkit For Customizing Your Notion Page";
+  "무료, 오픈 소스, Notion에서 운영되는 웹사이트 제작 도구";
 
 /* Step 4: enter a Google Font name, you can choose from https://fonts.google.com */
-const GOOGLE_FONT = "Rubik";
+const GOOGLE_FONT = "Noto Sans KR";
 
 /* Step 5: enter any custom scripts you'd like */
 const CUSTOM_SCRIPT = ``;
@@ -35,22 +31,14 @@ const CUSTOM_SCRIPT = ``;
 const PAGE_TO_SLUG = {};
 const slugs = [];
 const pages = [];
-<<<<<<< Codesandbox
 Object.keys(SLUG_TO_PAGE).forEach((slug) => {
-=======
-Object.keys(SLUG_TO_PAGE).forEach(slug => {
->>>>>>> GitHub
   const page = SLUG_TO_PAGE[slug];
   slugs.push(slug);
   pages.push(page);
   PAGE_TO_SLUG[page] = slug;
 });
 
-<<<<<<< Codesandbox
 addEventListener("fetch", (event) => {
-=======
-addEventListener("fetch", event => {
->>>>>>> GitHub
   event.respondWith(fetchAndApply(event.request));
 });
 
@@ -96,6 +84,7 @@ async function fetchAndApply(request) {
     return handleOptions(request);
   }
   let url = new URL(request.url);
+  url.hostname = "www.notion.so";
   if (url.pathname === "/robots.txt") {
     return new Response("Sitemap: https://" + MY_DOMAIN + "/sitemap.xml");
   }
@@ -104,15 +93,9 @@ async function fetchAndApply(request) {
     response.headers.set("content-type", "application/xml");
     return response;
   }
-<<<<<<< Codesandbox
-  let fullPathname = request.url.replace("https://" + MY_DOMAIN, "");
-=======
-  const notionUrl = "https://www.notion.so" + url.pathname;
->>>>>>> GitHub
-  const notionUrl = "https://www.notion.so" + fullPathname;
   let response;
   if (url.pathname.startsWith("/app") && url.pathname.endsWith("js")) {
-    response = await fetch(notionUrl);
+    response = await fetch(url.toString());
     let body = await response.text();
     response = new Response(
       body
@@ -124,7 +107,7 @@ async function fetchAndApply(request) {
     return response;
   } else if (url.pathname.startsWith("/api")) {
     // Forward API
-    response = await fetch(notionUrl, {
+    response = await fetch(url.toString(), {
       body: request.body,
       headers: {
         "content-type": "application/json;charset=UTF-8",
@@ -140,7 +123,7 @@ async function fetchAndApply(request) {
     const pageId = SLUG_TO_PAGE[url.pathname.slice(1)];
     return Response.redirect("https://" + MY_DOMAIN + "/" + pageId, 301);
   } else {
-    response = await fetch(notionUrl, {
+    response = await fetch(url.toString(), {
       body: request.body,
       headers: request.headers,
       method: request.method
@@ -191,7 +174,6 @@ class HeadRewriter {
   element(element) {
     if (GOOGLE_FONT !== "") {
       element.append(
-<<<<<<< Codesandbox
         `<link href='https://fonts.googleapis.com/css?family=${GOOGLE_FONT.replace(
           " ",
           "+"
@@ -210,6 +192,8 @@ class HeadRewriter {
       div.notion-topbar > div > div:nth-child(6) { display: none !important; }
       div.notion-topbar-mobile > div:nth-child(3) { display: none !important; }
       div.notion-topbar-mobile > div:nth-child(4) { display: none !important; }
+      div.notion-topbar > div > div:nth-child(1n).toggle-mode { display: block !important; }
+      div.notion-topbar-mobile > div:nth-child(1n).toggle-mode { display: block !important; }
       </style>`,
       {
         html: true
@@ -229,50 +213,7 @@ class BodyRewriter {
       const PAGE_TO_SLUG = {};
       const slugs = [];
       const pages = [];
-      let redirected = false;
-      Object.keys(SLUG_TO_PAGE).forEach(slug => {
-        const page = SLUG_TO_PAGE[slug];
-        slugs.push(slug);
-        pages.push(page);
-        PAGE_TO_SLUG[page] = slug;
-      });
-      function getPage() {
-        return location.pathname.slice(-32);
-=======
-        `<link href='https://fonts.googleapis.com/css?family=${GOOGLE_FONT.replace(' ', '+')}:Regular,Bold,Italic&display=swap' rel='stylesheet'>
-        <style>* { font-family: "${GOOGLE_FONT}" !important; }</style>`,
-        {
-          html: true
-        }
-      );
-    }
-    element.append(
-      `<style>
-      div.notion-topbar > div > div:nth-child(3) { display: none !important; }
-      div.notion-topbar > div > div:nth-child(4) { display: none !important; }
-      div.notion-topbar > div > div:nth-child(5) { display: none !important; }
-      div.notion-topbar > div > div:nth-child(6) { display: none !important; }
-      div.notion-topbar-mobile > div:nth-child(3) { display: none !important; }
-      div.notion-topbar-mobile > div:nth-child(4) { display: none !important; }
-      </style>`,
-      {
-        html: true
-      }
-    );
-  }
-}
-
-class BodyRewriter {
-  constructor(SLUG_TO_PAGE) {
-    this.SLUG_TO_PAGE = SLUG_TO_PAGE;
-  }
-  element(element) {
-    element.append(
-      `<script>
-      const SLUG_TO_PAGE = ${JSON.stringify(this.SLUG_TO_PAGE)};
-      const PAGE_TO_SLUG = {};
-      const slugs = [];
-      const pages = [];
+      const el = document.createElement('div');
       let redirected = false;
       Object.keys(SLUG_TO_PAGE).forEach(slug => {
         const page = SLUG_TO_PAGE[slug];
@@ -285,17 +226,36 @@ class BodyRewriter {
       }
       function getSlug() {
         return location.pathname.slice(1);
->>>>>>> GitHub
-      }
-<<<<<<< Codesandbox
-      function getSlug() {
-        return location.pathname.slice(1);
       }
       function updateSlug() {
         const slug = PAGE_TO_SLUG[getPage()];
         if (slug != null) {
           history.replaceState(history.state, '', '/' + slug);
         }
+      }
+      function onDark() {
+        el.innerHTML = '<div title="Change to Light Mode" style="margin-left: auto; margin-right: 14px; min-width: 0px;"><div role="button" tabindex="0" style="user-select: none; transition: background 120ms ease-in 0s; cursor: pointer; border-radius: 44px;"><div style="display: flex; flex-shrink: 0; height: 14px; width: 26px; border-radius: 44px; padding: 2px; box-sizing: content-box; background: rgb(46, 170, 220); transition: background 200ms ease 0s, box-shadow 200ms ease 0s;"><div style="width: 14px; height: 14px; border-radius: 44px; background: white; transition: transform 200ms ease-out 0s, background 200ms ease-out 0s; transform: translateX(12px) translateY(0px);"></div></div></div></div>';
+        document.body.classList.add('dark');
+        __console.environment.ThemeStore.setState({ mode: 'dark' });
+      };
+      function onLight() {
+        el.innerHTML = '<div title="Change to Dark Mode" style="margin-left: auto; margin-right: 14px; min-width: 0px;"><div role="button" tabindex="0" style="user-select: none; transition: background 120ms ease-in 0s; cursor: pointer; border-radius: 44px;"><div style="display: flex; flex-shrink: 0; height: 14px; width: 26px; border-radius: 44px; padding: 2px; box-sizing: content-box; background: rgba(135, 131, 120, 0.3); transition: background 200ms ease 0s, box-shadow 200ms ease 0s;"><div style="width: 14px; height: 14px; border-radius: 44px; background: white; transition: transform 200ms ease-out 0s, background 200ms ease-out 0s; transform: translateX(0px) translateY(0px);"></div></div></div></div>';
+        document.body.classList.remove('dark');
+        __console.environment.ThemeStore.setState({ mode: 'light' });
+      }
+      function toggle() {
+        if (document.body.classList.contains('dark')) {
+          onLight();
+        } else {
+          onDark();
+        }
+      }
+      function addDarkModeButton(device) {
+        const nav = device === 'web' ? document.querySelector('.notion-topbar').firstChild : document.querySelector('.notion-topbar-mobile');
+        el.className = 'toggle-mode';
+        el.addEventListener('click', toggle);
+        nav.appendChild(el);
+        onLight();
       }
       const observer = new MutationObserver(function() {
         if (redirected) return;
@@ -305,33 +265,7 @@ class BodyRewriter {
           || mobileNav && mobileNav.firstChild) {
           redirected = true;
           updateSlug();
-          const onpopstate = window.onpopstate;
-          window.onpopstate = function() {
-            if (slugs.includes(getSlug())) {
-              const page = SLUG_TO_PAGE[getSlug()];
-              if (page) {
-                history.replaceState(history.state, 'bypass', '/' + page);
-              }
-            }
-            onpopstate.apply(this, [].slice.call(arguments));
-            updateSlug();
-          };
-        }
-=======
-      function updateSlug() {
-        const slug = PAGE_TO_SLUG[getPage()];
-        if (slug != null) {
-          history.replaceState(history.state, '', '/' + slug);
-        }
-      }
-      const observer = new MutationObserver(function() {
-        if (redirected) return;
-        const nav = document.querySelector('.notion-topbar');
-        const mobileNav = document.querySelector('.notion-topbar-mobile');
-        if (nav && nav.firstChild && nav.firstChild.firstChild
-          || mobileNav && mobileNav.firstChild) {
-          redirected = true;
-          updateSlug();
+          addDarkModeButton(nav ? 'web' : 'mobile');
           const onpopstate = window.onpopstate;
           window.onpopstate = function() {
             if (slugs.includes(getSlug())) {
@@ -345,12 +279,6 @@ class BodyRewriter {
           };
         }
       });
-      observer.observe(document.querySelector('#notion-app'), {
-        childList: true,
->>>>>>> GitHub
-        subtree: true,
-      });
-<<<<<<< Codesandbox
       observer.observe(document.querySelector('#notion-app'), {
         childList: true,
         subtree: true,
@@ -368,28 +296,7 @@ class BodyRewriter {
           arguments[2] = '/' + PAGE_TO_SLUG[id];
         }
         return pushState.apply(window.history, arguments);
-=======
-      const replaceState = window.history.replaceState;
-      window.history.replaceState = function(state) {
-        if (arguments[1] !== 'bypass' && slugs.includes(getSlug())) return;
-        return replaceState.apply(window.history, arguments);
       };
-      const pushState = window.history.pushState;
-      window.history.pushState = function(state) {
-        const dest = new URL(location.protocol + location.host + arguments[2]);
-        const id = dest.pathname.slice(-32);
-        if (pages.includes(id)) {
-          arguments[2] = '/' + PAGE_TO_SLUG[id];
-        }
-        return pushState.apply(window.history, arguments);
-      };
-      const open = window.XMLHttpRequest.prototype.open;
-      window.XMLHttpRequest.prototype.open = function() {
-        arguments[1] = arguments[1].replace('${MY_DOMAIN}', 'www.notion.so');
->>>>>>> GitHub
-        return open.apply(this, [].slice.call(arguments));
-      };
-<<<<<<< Codesandbox
       const open = window.XMLHttpRequest.prototype.open;
       window.XMLHttpRequest.prototype.open = function() {
         arguments[1] = arguments[1].replace('${MY_DOMAIN}', 'www.notion.so');
@@ -407,25 +314,7 @@ async function appendJavascript(res, SLUG_TO_PAGE) {
   return new HTMLRewriter()
     .on("title", new MetaRewriter())
     .on("meta", new MetaRewriter())
-=======
-    </script>${CUSTOM_SCRIPT}`,
-      {
-        html: true
-      }
-    );
-  }
-}
-
-async function appendJavascript(res, SLUG_TO_PAGE) {
-  return new HTMLRewriter()
-    .on("title", new MetaRewriter())
-    .on("meta", new MetaRewriter())
     .on("head", new HeadRewriter())
     .on("body", new BodyRewriter(SLUG_TO_PAGE))
     .transform(res);
 }
-
->>>>>>> GitHub
-    .on("head", new HeadRewriter())
-    .on("body", new BodyRewriter(SLUG_TO_PAGE))
-    .transform(res);
