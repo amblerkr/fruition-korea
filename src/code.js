@@ -53,6 +53,8 @@ ${slugs
   
   /* CONFIGURATION ENDS HERE */
   
+  /* CONFIGURATION ENDS HERE */
+  
   const PAGE_TO_SLUG = {};
   const slugs = [];
   const pages = [];
@@ -107,6 +109,7 @@ ${slugs
       return handleOptions(request);
     }
     let url = new URL(request.url);
+    url.hostname = 'www.notion.so';
     if (url.pathname === '/robots.txt') {
       return new Response('Sitemap: https://' + MY_DOMAIN + '/sitemap.xml');
     }
@@ -115,18 +118,16 @@ ${slugs
       response.headers.set('content-type', 'application/xml');
       return response;
     }
-    let fullPathname = request.url.replace("https://" + MY_DOMAIN, "");
-    const notionUrl = 'https://www.notion.so' + fullPathname;
     let response;
     if (url.pathname.startsWith('/app') && url.pathname.endsWith('js')) {
-      response = await fetch(notionUrl);
+      response = await fetch(url.toString());
       let body = await response.text();
       response = new Response(body.replace(/www.notion.so/g, MY_DOMAIN).replace(/notion.so/g, MY_DOMAIN), response);
       response.headers.set('Content-Type', 'application/x-javascript');
       return response;
     } else if ((url.pathname.startsWith('/api'))) {
       // Forward API
-      response = await fetch(notionUrl, {
+      response = await fetch(url.toString(), {
         body: request.body,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
@@ -141,7 +142,7 @@ ${slugs
       const pageId = SLUG_TO_PAGE[url.pathname.slice(1)];
       return Response.redirect('https://' + MY_DOMAIN + '/' + pageId, 301);
     } else {
-      response = await fetch(notionUrl, {
+      response = await fetch(url.toString(), {
         body: request.body,
         headers: request.headers,
         method: request.method,
@@ -187,7 +188,7 @@ ${slugs
       if (GOOGLE_FONT !== '') {
         element.append(\`<link href="https://fonts.googleapis.com/css?family=\${GOOGLE_FONT.replace(' ', '+')}:Regular,Bold,Italic&display=swap" rel="stylesheet">
         <style>* { font-family: "\${GOOGLE_FONT}" !important; }</style>\`, {
-         html: true
+          html: true
         });
       }
       element.append(\`<style>
@@ -197,6 +198,8 @@ ${slugs
       div.notion-topbar > div > div:nth-child(6) { display: none !important; }
       div.notion-topbar-mobile > div:nth-child(3) { display: none !important; }
       div.notion-topbar-mobile > div:nth-child(4) { display: none !important; }
+      div.notion-topbar > div > div:nth-child(1n).toggle-mode { display: block !important; }
+      div.notion-topbar-mobile > div:nth-child(1n).toggle-mode { display: block !important; }
       </style>\`, {
         html: true
       })
@@ -214,6 +217,7 @@ ${slugs
       const PAGE_TO_SLUG = {};
       const slugs = [];
       const pages = [];
+      const el = document.createElement('div');
       let redirected = false;
       Object.keys(SLUG_TO_PAGE).forEach(slug => {
         const page = SLUG_TO_PAGE[slug];
@@ -233,6 +237,30 @@ ${slugs
           history.replaceState(history.state, '', '/' + slug);
         }
       }
+      function onDark() {
+        el.innerHTML = '<div title="Change to Light Mode" style="margin-left: auto; margin-right: 14px; min-width: 0px;"><div role="button" tabindex="0" style="user-select: none; transition: background 120ms ease-in 0s; cursor: pointer; border-radius: 44px;"><div style="display: flex; flex-shrink: 0; height: 14px; width: 26px; border-radius: 44px; padding: 2px; box-sizing: content-box; background: rgb(46, 170, 220); transition: background 200ms ease 0s, box-shadow 200ms ease 0s;"><div style="width: 14px; height: 14px; border-radius: 44px; background: white; transition: transform 200ms ease-out 0s, background 200ms ease-out 0s; transform: translateX(12px) translateY(0px);"></div></div></div></div>';
+        document.body.classList.add('dark');
+        __console.environment.ThemeStore.setState({ mode: 'dark' });
+      };
+      function onLight() {
+        el.innerHTML = '<div title="Change to Dark Mode" style="margin-left: auto; margin-right: 14px; min-width: 0px;"><div role="button" tabindex="0" style="user-select: none; transition: background 120ms ease-in 0s; cursor: pointer; border-radius: 44px;"><div style="display: flex; flex-shrink: 0; height: 14px; width: 26px; border-radius: 44px; padding: 2px; box-sizing: content-box; background: rgba(135, 131, 120, 0.3); transition: background 200ms ease 0s, box-shadow 200ms ease 0s;"><div style="width: 14px; height: 14px; border-radius: 44px; background: white; transition: transform 200ms ease-out 0s, background 200ms ease-out 0s; transform: translateX(0px) translateY(0px);"></div></div></div></div>';
+        document.body.classList.remove('dark');
+        __console.environment.ThemeStore.setState({ mode: 'light' });
+      }
+      function toggle() {
+        if (document.body.classList.contains('dark')) {
+          onLight();
+        } else {
+          onDark();
+        }
+      }
+      function addDarkModeButton(device) {
+        const nav = device === 'web' ? document.querySelector('.notion-topbar').firstChild : document.querySelector('.notion-topbar-mobile');
+        el.className = 'toggle-mode';
+        el.addEventListener('click', toggle);
+        nav.appendChild(el);
+        onLight();
+      }
       const observer = new MutationObserver(function() {
         if (redirected) return;
         const nav = document.querySelector('.notion-topbar');
@@ -241,6 +269,7 @@ ${slugs
           || mobileNav && mobileNav.firstChild) {
           redirected = true;
           updateSlug();
+          addDarkModeButton(nav ? 'web' : 'mobile');
           const onpopstate = window.onpopstate;
           window.onpopstate = function() {
             if (slugs.includes(getSlug())) {
