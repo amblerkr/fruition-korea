@@ -202,7 +202,7 @@ class HeadRewriter {
       div.notion-topbar > div > div:nth-child(4) { display: none !important; }
       div.notion-topbar > div > div:nth-child(5) { display: none !important; }
       div.notion-topbar > div > div:nth-child(6) { display: none !important; }
-      div.notion-topbar-mobile > div:nth-child(1) { padding: 0px 10px !important; }      div.notion-topbar-mobile > div:nth-child(3) { display: none !important; }
+      div.notion-topbar-mobile > div:nth-child(1) { padding: 0px 10px !important; }
       div.notion-topbar-mobile > div:nth-child(3) { display: none !important; }
       div.notion-topbar-mobile > div:nth-child(4) { display: none !important; }
       div.notion-topbar-mobile > div:nth-child(5) { display: none !important; }
